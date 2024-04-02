@@ -67,6 +67,7 @@ class BoardTest {
 
             assertThat(board.isOpponentKingExist(position, Team.BLACK)).isFalse();
         }
+
         @Test
         @DisplayName("해당 위치가 왕이 아닌 다른 말이 있을 경우, false를 반환한다.")
         void isOpponentKingExistAtTest_whenOtherPieceExist() {

@@ -2,7 +2,7 @@ package chess.domain;
 
 import chess.dto.ProgressStatus;
 
-public class  GameStatus {
+public class GameStatus {
 
     private Team currentTurn;
     private boolean isProgress;

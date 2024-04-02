@@ -9,7 +9,7 @@ import java.util.Optional;
 public class ChessGame {
 
     private final Board board;
-    private GameStatus status;
+    private final GameStatus status;
 
     public ChessGame(Map<Position, Piece> board, Team currentTurn) {
         this.board = new Board(board);
