@@ -1,6 +1,8 @@
 package chess.domain;
 
-public class GameStatus {
+import chess.dto.ProgressStatus;
+
+public class  GameStatus {
 
     private Team currentTurn;
     private boolean isProgress;
@@ -10,7 +12,10 @@ public class GameStatus {
         this.isProgress = true;
     }
 
-    public void validateTurn(Team currentTeam) {
+    public void validate(Team currentTeam) {
+        if (!isProgressGame()) {
+            throw new IllegalStateException("게임이 이미 종료되었습니다.");
+        }
         if (isDifferentTurn(currentTeam)) {
             throw new IllegalArgumentException("해당 팀의 차례가 아닙니다.");
         }
@@ -26,6 +31,16 @@ public class GameStatus {
 
     public void endGame() {
         isProgress = false;
+    }
+
+    public ProgressStatus findStatus() {
+        if (isProgressGame()) {
+            return ProgressStatus.PROGRESS;
+        }
+        if (getCurrentTurn().isBlack()) {
+            return ProgressStatus.BLACK_WIN;
+        }
+        return ProgressStatus.WHITE_WIN;
     }
 
     public Team getCurrentTurn() {

@@ -66,15 +66,15 @@ public class ChessService {
                 .toList();
     }
 
-    public ProgressStatus moveTo(Position start, Position end) {
-        ProgressStatus progressStatus = chessGame.move(start, end);
+    public void moveTo(Position start, Position end) {
+        chessGame.move(start, end);
+        ProgressStatus status = chessGame.findStatus();
 
-        if (progressStatus.isContinue()) {
+        if (status.isContinue()) {
             saveMoving(start, end);
-            return progressStatus;
+            return;
         }
         chessDao.deleteAll();
-        return progressStatus;
     }
 
     private void saveMoving(Position start, Position end) {
@@ -117,5 +117,9 @@ public class ChessService {
 
     public Team findCurrentTurn() {
         return chessGame.findCurrentTurn();
+    }
+
+    public ProgressStatus findStatus() {
+        return chessGame.findStatus();
     }
 }

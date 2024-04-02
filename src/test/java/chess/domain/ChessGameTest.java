@@ -153,7 +153,9 @@ class ChessGameTest {
         @Test
         @DisplayName("상대편 왕을 잡을 경우, 해당 팀이 이긴다.")
         void moveTest_whenCaptureKing_winGame() {
-            assertThat(chessGame.move(START_QUEEN, START_ENEMY_KING)).isEqualTo(ProgressStatus.WHITE_WIN);
+            chessGame.move(START_QUEEN, START_ENEMY_KING);
+
+            assertThat(chessGame.findStatus()).isEqualTo(ProgressStatus.WHITE_WIN);
         }
 
         @Test
@@ -161,7 +163,9 @@ class ChessGameTest {
         void moveTest_whenNotCaptureKing_progressGame() {
             Position possiblePosition = new Position(File.E, Rank.THREE);
 
-            assertThat(chessGame.move(START_QUEEN, possiblePosition)).isEqualTo(ProgressStatus.PROGRESS);
+            chessGame.move(START_QUEEN, possiblePosition);
+
+            assertThat(chessGame.findStatus()).isEqualTo(ProgressStatus.PROGRESS);
         }
     }
 
@@ -238,7 +242,5 @@ class ChessGameTest {
                     Map.entry(Team.WHITE, new Point(0.5 + 0.5)),
                     Map.entry(Team.BLACK, Point.ZERO));
         }
-
-
     }
 }

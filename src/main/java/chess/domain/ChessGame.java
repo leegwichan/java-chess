@@ -1,16 +1,10 @@
 package chess.domain;
 
 import chess.domain.piece.Piece;
-import chess.domain.position.File;
 import chess.domain.position.Position;
-import chess.domain.position.Rank;
 import chess.dto.ProgressStatus;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class ChessGame {
 
@@ -30,23 +24,15 @@ public class ChessGame {
         return board.findPieceAt(position);
     }
 
-    public ProgressStatus move(Position start, Position end) {
+    public void move(Position start, Position end) {
         validate(start, end);
         boolean isKingCaptured = board.isOpponentKingExist(end, status.getCurrentTurn());
         board.move(start, end);
         if (isKingCaptured) {
             status.endGame();
-            return findFinishStatus(status.getCurrentTurn());
+            return;
         }
         status.nextTurn();
-        return ProgressStatus.PROGRESS;
-    }
-
-    public ProgressStatus findFinishStatus(Team currentTurn) {
-        if (currentTurn == Team.BLACK) {
-            return ProgressStatus.BLACK_WIN;
-        }
-        return ProgressStatus.WHITE_WIN;
     }
 
     private void validate(Position start, Position end) {
@@ -55,7 +41,7 @@ public class ChessGame {
         Team pieceTeam = board.findPieceAt(start)
                 .map(Piece::getTeam)
                 .orElseThrow();
-        status.validateTurn(pieceTeam);
+        status.validate(pieceTeam);
     }
 
     public Map<Team, Point> calculateTotalPoints() {
@@ -64,5 +50,9 @@ public class ChessGame {
 
     public Team findCurrentTurn() {
         return status.getCurrentTurn();
+    }
+
+    public ProgressStatus findStatus() {
+        return status.findStatus();
     }
 }
