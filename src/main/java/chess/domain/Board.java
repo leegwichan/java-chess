@@ -1,11 +1,15 @@
 package chess.domain;
 
 import chess.domain.piece.Piece;
+import chess.domain.position.File;
 import chess.domain.position.Position;
+import chess.domain.position.Rank;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Board {
 
@@ -80,5 +84,42 @@ public class Board {
 
     private boolean isExistPiece(Position position) {
         return board.containsKey(position);
+    }
+
+    public Map<Team, Point> calculateTotalPoints() {
+        return Arrays.stream(Team.values())
+                .collect(Collectors.toMap(
+                        team -> team,
+                        this::calculateTotalPoints
+                ));
+    }
+
+    private Point calculateTotalPoints(Team team) {
+        return Arrays.stream(File.values())
+                .map(file -> calculatePoints(team, file))
+                .reduce(Point.ZERO, Point::add);
+    }
+
+    private Point calculatePoints(Team team, File file) {
+        List<Piece> sameFilePieces = Arrays.stream(Rank.values())
+                .map(rank -> new Position(file, rank))
+                .map(this::findPieceAt)
+                .flatMap(Optional::stream)
+                .filter(piece -> piece.isSameTeam(team))
+                .toList();
+        return calculatePoints(sameFilePieces);
+    }
+
+    private Point calculatePoints(List<Piece> teamPieces) {
+        boolean isPawnOverlappedInFilePawn = isOverlappedPawn(teamPieces);
+        return teamPieces.stream()
+                .map(piece -> piece.getPoint(isPawnOverlappedInFilePawn))
+                .reduce(Point.ZERO, Point::add);
+    }
+
+    private boolean isOverlappedPawn(List<Piece> pieces) {
+        return pieces.stream()
+                .filter(Piece::isPawn)
+                .count() >= 2;
     }
 }
