@@ -43,7 +43,7 @@ public class Board {
         movePiece(start, end);
     }
 
-    private void validate(Position start, Position end) {
+    public void validate(Position start, Position end) {
         if (isNotExistPiece(start)) {
             throw new IllegalArgumentException("해당 위치에 말이 없습니다.");
         }
