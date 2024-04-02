@@ -13,12 +13,12 @@ import chess.domain.position.Rank;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BoardFactory {
+public class ChessGameFactory {
 
-    private BoardFactory() {
+    private ChessGameFactory() {
     }
 
-    public static Board createInitBoard() {
+    public static ChessGame createInitBoard() {
         Map<Position, Piece> map = new HashMap<>();
         initializePawn(map);
         initializeKnight(map);
@@ -27,7 +27,7 @@ public class BoardFactory {
         initializeQueen(map);
         initializeKing(map);
 
-        return new Board(map);
+        return new ChessGame(map);
     }
 
     private static void initializePawn(Map<Position, Piece> map) {

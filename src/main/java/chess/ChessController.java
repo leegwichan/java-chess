@@ -9,13 +9,13 @@ import chess.view.InputView;
 import chess.view.OutputView;
 import java.util.Map;
 
-public class ChessGame {
+public class ChessController {
 
     private final InputView inputView;
     private final OutputView outputView;
     private final ChessService chessService;
 
-    public ChessGame(InputView inputView, OutputView outputView, ChessService chessService) {
+    public ChessController(InputView inputView, OutputView outputView, ChessService chessService) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.chessService = chessService;

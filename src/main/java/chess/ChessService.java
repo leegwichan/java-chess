@@ -2,8 +2,8 @@ package chess;
 
 import chess.dao.ChessDao;
 import chess.dao.PieceEntity;
-import chess.domain.Board;
-import chess.domain.BoardFactory;
+import chess.domain.ChessGame;
+import chess.domain.ChessGameFactory;
 import chess.domain.Point;
 import chess.domain.Team;
 import chess.domain.piece.Piece;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class ChessService {
 
-    private Board board;
+    private ChessGame chessGame;
     private final ChessDao chessDao;
 
     public ChessService(ChessDao chessDao) {
@@ -30,20 +30,20 @@ public class ChessService {
         if (chessDao.isExistSavingGame()) {
             List<PieceEntity> pieceEntities = chessDao.findAllPieces();
             TurnType turn = chessDao.findCurrentTurn();
-            board = toBoard(pieceEntities, turn);
+            chessGame = toBoard(pieceEntities, turn);
             return;
         }
-        board = BoardFactory.createInitBoard();
+        chessGame = ChessGameFactory.createInitBoard();
         saveBoard();
     }
 
     private void validateInitState() {
-        if (board != null) {
+        if (chessGame != null) {
             throw new IllegalStateException("보드가 이미 초기화 되었습니다.");
         }
     }
 
-    private Board toBoard(List<PieceEntity> pieceEntities, TurnType turnType) {
+    private ChessGame toBoard(List<PieceEntity> pieceEntities, TurnType turnType) {
         Map<Position, Piece> board = pieceEntities.stream()
                 .filter(PieceEntity::isExistPiece)
                 .collect(Collectors.toMap(
@@ -51,12 +51,12 @@ public class ChessService {
                         PieceEntity::toPiece
                 ));
         Team turn = turnType.getTeam();
-        return new Board(board, turn);
+        return new ChessGame(board, turn);
     }
 
     private void saveBoard() {
         List<PieceEntity> entities = findEntities();
-        TurnType turn = TurnType.from(board.findCurrentTurn());
+        TurnType turn = TurnType.from(chessGame.findCurrentTurn());
         chessDao.saveBoard(entities, turn);
     }
 
@@ -67,7 +67,7 @@ public class ChessService {
     }
 
     public ProgressStatus moveTo(Position start, Position end) {
-        ProgressStatus progressStatus = board.move(start, end);
+        ProgressStatus progressStatus = chessGame.move(start, end);
 
         if (progressStatus.isContinue()) {
             saveMoving(start, end);
@@ -79,7 +79,7 @@ public class ChessService {
 
     private void saveMoving(Position start, Position end) {
         PieceEntity movedPiece = findPieceToEntity(end);
-        TurnType turnType = TurnType.from(board.findCurrentTurn());
+        TurnType turnType = TurnType.from(chessGame.findCurrentTurn());
         chessDao.saveMoving(movedPiece, start, turnType);
     }
 
@@ -90,20 +90,20 @@ public class ChessService {
     }
 
     private Entry<Position, PieceDto> toResultEntry(Position position) {
-        PieceDto pieceDto = board.find(position)
+        PieceDto pieceDto = chessGame.find(position)
                 .map(PieceDto::from)
                 .orElse(PieceDto.createEmptyPiece());
         return Map.entry(position, pieceDto);
     }
 
     private PieceEntity findPieceToEntity(Position position) {
-        return board.find(position)
+        return chessGame.find(position)
                 .map(piece -> new PieceEntity(position, piece))
                 .orElse(PieceEntity.createEmptyPiece(position));
     }
 
     public Map<Team, Double> calculatePiecePoints() {
-        Map<Team, Point> status = board.calculateTotalPoints();
+        Map<Team, Point> status = chessGame.calculateTotalPoints();
         return toDto(status);
     }
 
@@ -116,6 +116,6 @@ public class ChessService {
     }
 
     public Team findCurrentTurn() {
-        return board.findCurrentTurn();
+        return chessGame.findCurrentTurn();
     }
 }

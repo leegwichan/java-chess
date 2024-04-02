@@ -11,9 +11,6 @@ import chess.view.OutputView;
 
 public class ChessApplication {
 
-    private static final InputView INPUT_VIEW = new InputView();
-    private static final OutputView OUTPUT_VIEW = new OutputView();
-
     public static void main(String[] args) {
         ConnectionManager connectionManager = new ConnectionManager();
         ChessGameRepository chessGameRepository = new MysqlChessGameRepository(connectionManager);
@@ -21,15 +18,17 @@ public class ChessApplication {
         ChessDao chessDao = new ChessDao(chessGameRepository, pieceRepository);
         ChessService chessService = new ChessService(chessDao);
 
-        ChessGame chessGame = new ChessGame(INPUT_VIEW, OUTPUT_VIEW, chessService);
-        run(chessGame);
+        OutputView outputView = new OutputView();
+        InputView inputView = new InputView();
+        ChessController chessController = new ChessController(inputView, outputView, chessService);
+        run(chessController, outputView);
     }
 
-    private static void run(ChessGame chessGame) {
+    private static void run(ChessController chessController, OutputView outputView) {
         try {
-            chessGame.run();
+            chessController.run();
         } catch (IllegalArgumentException exception) {
-            OUTPUT_VIEW.printExceptionMessage(exception);
+            outputView.printExceptionMessage(exception);
         }
     }
 }

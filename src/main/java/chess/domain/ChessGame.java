@@ -12,17 +12,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class Board {
+public class ChessGame {
 
     private final Map<Position, Piece> board;
     private Team turn;
 
-    public Board(Map<Position, Piece> board, Team turn) {
+    public ChessGame(Map<Position, Piece> board, Team turn) {
         this.board = new HashMap<>(board);
         this.turn = turn;
     }
 
-    public Board(Map<Position, Piece> board) {
+    public ChessGame(Map<Position, Piece> board) {
         this(board, Team.WHITE);
     }
 
