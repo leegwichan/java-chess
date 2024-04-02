@@ -43,6 +43,53 @@ class BoardTest {
         assertThat(board.findPieceAt(position)).isEqualTo(Optional.of(king));
     }
 
+
+    @Nested
+    @DisplayName("상대편 왕 특정 위치의 존재하는지 테스트")
+    class OpponentKingTest {
+
+        @Test
+        @DisplayName("해당 위치가 비어있을 경우, false를 반환한다.")
+        void isOpponentKingExistAtTest_whenNotExist() {
+            Board board = new Board(Map.of());
+            Position notExistPosition = new Position(File.D, Rank.TWO);
+
+            assertThat(board.isOpponentKingExist(notExistPosition, Team.BLACK)).isFalse();
+        }
+
+        @Test
+        @DisplayName("해당 위치가 같은 팀 말이 있을 경우, false를 반환한다.")
+        void isOpponentKingExistAtTest_whenOurTeamExist() {
+            Position position = new Position(File.E, Rank.TWO);
+            King king = new King(Team.BLACK);
+            Map<Position, Piece> map = Map.of(position, king);
+            Board board = new Board(map);
+
+            assertThat(board.isOpponentKingExist(position, Team.BLACK)).isFalse();
+        }
+        @Test
+        @DisplayName("해당 위치가 왕이 아닌 다른 말이 있을 경우, false를 반환한다.")
+        void isOpponentKingExistAtTest_whenOtherPieceExist() {
+            Position position = new Position(File.E, Rank.TWO);
+            Pawn pawn = new Pawn(Team.WHITE);
+            Map<Position, Piece> map = Map.of(position, pawn);
+            Board board = new Board(map);
+
+            assertThat(board.isOpponentKingExist(position, Team.BLACK)).isFalse();
+        }
+
+        @Test
+        @DisplayName("해당 위치가 상대편 왕이 있을 경우, true를 반환한다.")
+        void isOpponentKingExistAtTest_whenOpponentKingExist() {
+            Position position = new Position(File.E, Rank.TWO);
+            King king = new King(Team.WHITE);
+            Map<Position, Piece> map = Map.of(position, king);
+            Board board = new Board(map);
+
+            assertThat(board.isOpponentKingExist(position, Team.BLACK)).isTrue();
+        }
+    }
+
     /*
      * ........ 8
      * ........ 7

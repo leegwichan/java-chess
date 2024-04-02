@@ -24,6 +24,16 @@ public class Board {
         return Optional.ofNullable(piece);
     }
 
+    public boolean isOpponentKingExist(Position position, Team currentTeam) {
+        return findPieceAt(position)
+                .map(piece -> isOpponentKing(currentTeam, piece))
+                .orElse(false);
+    }
+
+    private boolean isOpponentKing(Team currentTeam, Piece piece) {
+        return !piece.isSameTeam(currentTeam) && piece.isKing();
+    }
+
     public void move(Position start, Position end) {
         validate(start, end);
         Piece piece = board.get(start);
