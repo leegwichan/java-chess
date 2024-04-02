@@ -11,13 +11,12 @@ import java.util.Map;
 
 public class ChessController {
 
-    private final InputView inputView;
-    private final OutputView outputView;
+    private static final InputView INPUT_VIEW = new InputView();
+    private static final OutputView OUTPUT_VIEW = new OutputView();
+
     private final ChessService chessService;
 
-    public ChessController(InputView inputView, OutputView outputView, ChessService chessService) {
-        this.inputView = inputView;
-        this.outputView = outputView;
+    public ChessController(ChessService chessService) {
         this.chessService = chessService;
     }
 
@@ -26,15 +25,15 @@ public class ChessController {
             startGame();
             play();
         } catch (IllegalArgumentException exception) {
-            outputView.printExceptionMessage(exception);
+            OUTPUT_VIEW.printExceptionMessage(exception);
         }
     }
 
     private void startGame() {
-        outputView.printStartGame();
-        GameCommand command = inputView.readCommand();
+        OUTPUT_VIEW.printStartGame();
+        GameCommand command = INPUT_VIEW.readCommand();
         if (command.isStart()) {
-            initBoard();
+            initializeBoard();
             showCurrentTeam();
             showBoard();
             return;
@@ -42,13 +41,13 @@ public class ChessController {
         throw new IllegalArgumentException("아직 게임을 시작하지 않았습니다.");
     }
 
-    private void initBoard() {
-        chessService.init();
+    private void initializeBoard() {
+        chessService.inititalizeBoard();
     }
 
     private void showCurrentTeam() {
         Team turn = chessService.findCurrentTurn();
-        outputView.printCurrentTurn(turn);
+        OUTPUT_VIEW.printCurrentTurn(turn);
     }
 
     private void play() {
@@ -60,7 +59,7 @@ public class ChessController {
     }
 
     private ProgressStatus processTurn() {
-        GameCommand command = inputView.readCommand();
+        GameCommand command = INPUT_VIEW.readCommand();
         if (command.isStart()) {
             throw new IllegalArgumentException("이미 게임을 시작했습니다.");
         }
@@ -74,8 +73,8 @@ public class ChessController {
     }
 
     private ProgressStatus executeMove() {
-        Position start = inputView.readPosition();
-        Position end = inputView.readPosition();
+        Position start = INPUT_VIEW.readPosition();
+        Position end = INPUT_VIEW.readPosition();
         chessService.moveTo(start, end);
 
         showBoard();
@@ -84,7 +83,7 @@ public class ChessController {
 
     private ProgressStatus executeStatus() {
         Map<Team, Double> statusDto = chessService.calculatePiecePoints();
-        outputView.printStatus(statusDto);
+        OUTPUT_VIEW.printStatus(statusDto);
         return ProgressStatus.PROGRESS;
     }
 
@@ -92,11 +91,11 @@ public class ChessController {
         if (status.isInputEndCommand()) {
             return;
         }
-        outputView.printWinnerMessage(status);
+        OUTPUT_VIEW.printWinnerMessage(status);
     }
 
     private void showBoard() {
         Map<Position, PieceDto> boardDto = chessService.findTotalBoard();
-        outputView.printBoard(boardDto);
+        OUTPUT_VIEW.printBoard(boardDto);
     }
 }
