@@ -22,8 +22,12 @@ public class ChessController {
     }
 
     public void run() {
-        startGame();
-        play();
+        try {
+            startGame();
+            play();
+        } catch (IllegalArgumentException exception) {
+            outputView.printExceptionMessage(exception);
+        }
     }
 
     private void startGame() {

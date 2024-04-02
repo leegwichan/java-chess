@@ -14,7 +14,11 @@ public class ConnectionManager {
     private static final String USERNAME = "root";
     private static final String PASSWORD = "root";
 
-    private static final Connection SINGLE_CONNECTION = createConnection();
+    private final Connection singleConnection;
+
+    public ConnectionManager() {
+        singleConnection = createConnection();
+    }
 
     private static Connection createConnection() {
         try {
@@ -26,6 +30,13 @@ public class ConnectionManager {
     }
 
     public Connection getConnection() {
-        return SINGLE_CONNECTION;
+        return singleConnection;
+    }
+
+    public void closeConnection() {
+        try {
+            singleConnection.close();
+        } catch (SQLException ignore) {
+        }
     }
 }

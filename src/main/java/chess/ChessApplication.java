@@ -13,22 +13,22 @@ public class ChessApplication {
 
     public static void main(String[] args) {
         ConnectionManager connectionManager = new ConnectionManager();
-        ChessGameRepository chessGameRepository = new MysqlChessGameRepository(connectionManager);
-        PieceRepository pieceRepository = new MysqlPieceRepository(connectionManager);
-        ChessDao chessDao = new ChessDao(chessGameRepository, pieceRepository);
-        ChessService chessService = new ChessService(chessDao);
-
+        ChessService chessService = createChessService(connectionManager);
         OutputView outputView = new OutputView();
         InputView inputView = new InputView();
         ChessController chessController = new ChessController(inputView, outputView, chessService);
-        run(chessController, outputView);
-    }
 
-    private static void run(ChessController chessController, OutputView outputView) {
         try {
             chessController.run();
-        } catch (IllegalArgumentException exception) {
-            outputView.printExceptionMessage(exception);
+        } finally {
+            connectionManager.closeConnection();
         }
+    }
+
+    private static ChessService createChessService(ConnectionManager connectionManager) {
+        ChessGameRepository chessGameRepository = new MysqlChessGameRepository(connectionManager);
+        PieceRepository pieceRepository = new MysqlPieceRepository(connectionManager);
+        ChessDao chessDao = new ChessDao(chessGameRepository, pieceRepository);
+        return new ChessService(chessDao);
     }
 }
