@@ -17,7 +17,7 @@ public enum PieceType {
     QUEEN(Queen.class, Queen::new),
     ROOK(Rook.class, Rook::new),
     BISHOP(Bishop.class, Bishop::new),
-    KNIGHT(Knight.class, King::new),
+    KNIGHT(Knight.class, Knight::new),
     PAWN(Pawn.class, Pawn::new),
     EMPTY(null, null),
     ;
