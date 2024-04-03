@@ -18,7 +18,7 @@ public final class Pawn extends Piece {
     private static final List<MovementRule> WHITE_MOVEMENT_RULES = List.of(
             new WhitePawnFirstMovement(), new WhitePawnDefaultMovement(), new WhitePawnDiagonalMovement());
     private static final Point PIECE_BASIC_POINT = new Point(1.0);
-    private static final Point PIECE_OVERLAPPED_POINT = new Point(0.5); // TODO 변수명 변경
+    private static final Point PIECE_OVERLAPPED_POINT = new Point(0.5);
 
 
     public Pawn(Team team) {
