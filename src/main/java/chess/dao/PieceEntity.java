@@ -5,39 +5,39 @@ import chess.domain.piece.Piece;
 import chess.domain.position.File;
 import chess.domain.position.Position;
 import chess.domain.position.Rank;
+import chess.dto.PieceDto;
 import chess.dto.PieceType;
 import chess.dto.TeamType;
 
 public class PieceEntity {
 
     private final Position position;
-    private final PieceType pieceType;
-    private final TeamType teamType;
+    private final PieceDto pieceDto;
 
     public PieceEntity(Position position, Piece piece) {
-        this(position, PieceType.from(piece), TeamType.from(piece.getTeam()));
+        this(position, PieceDto.from(piece));
     }
 
     public PieceEntity(Position position, PieceType pieceType, TeamType teamType) {
+        this(position, new PieceDto(pieceType, teamType));
+    }
+
+    private PieceEntity(Position position, PieceDto pieceDto) {
         this.position = position;
-        this.pieceType = pieceType;
-        this.teamType = teamType;
+        this.pieceDto = pieceDto;
     }
 
     public static PieceEntity createEmptyPiece(Position position) {
-        PieceType pieceType = PieceType.getEmptyType();
-        TeamType teamType = TeamType.getEmptyType();
-
-        return new PieceEntity(position, pieceType, teamType);
+        return new PieceEntity(position, PieceDto.createEmptyPiece());
     }
 
     public Piece toPiece() {
-        Team team = teamType.getTeam();
-        return pieceType.createPiece(team);
+        Team team = getTeamType().getTeam();
+        return getPieceType().createPiece(team);
     }
 
     public boolean isExistPiece() {
-        return !pieceType.isEmpty();
+        return pieceDto.isExist();
     }
 
     public Rank getRank() {
@@ -53,10 +53,10 @@ public class PieceEntity {
     }
 
     public PieceType getPieceType() {
-        return pieceType;
+        return pieceDto.pieceType();
     }
 
     public TeamType getTeamType() {
-        return teamType;
+        return pieceDto.teamType();
     }
 }

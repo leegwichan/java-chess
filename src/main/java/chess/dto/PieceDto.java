@@ -12,10 +12,14 @@ public record PieceDto(PieceType pieceType, TeamType teamType) {
     }
 
     public static PieceDto createEmptyPiece() {
-        return new PieceDto(PieceType.getEmptyType(), TeamType.EMPTY);
+        return new PieceDto(PieceType.getEmptyType(), TeamType.getEmptyType());
     }
 
     public boolean isBlack() {
         return teamType.isBlackTeam();
+    }
+
+    public boolean isExist() {
+        return !pieceType.isEmpty();
     }
 }
