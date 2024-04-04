@@ -41,15 +41,6 @@ public class ChessController {
         throw new IllegalArgumentException("아직 게임을 시작하지 않았습니다.");
     }
 
-    private void initializeBoard() {
-        chessService.inititalizeBoard();
-    }
-
-    private void showCurrentTeam() {
-        Team turn = chessService.findCurrentTurn();
-        OUTPUT_VIEW.printCurrentTurn(turn);
-    }
-
     private void play() {
         ProgressStatus status;
         do {
@@ -75,16 +66,29 @@ public class ChessController {
     private ProgressStatus executeMove() {
         Position start = INPUT_VIEW.readPosition();
         Position end = INPUT_VIEW.readPosition();
-        chessService.moveTo(start, end);
-
+        chessService.executeMove(start, end);
         showBoard();
         return chessService.findStatus();
     }
 
     private ProgressStatus executeStatus() {
-        Map<Team, Double> statusDto = chessService.calculatePiecePoints();
+        Map<Team, Double> statusDto = chessService.executeStatus();
         OUTPUT_VIEW.printStatus(statusDto);
-        return ProgressStatus.PROGRESS;
+        return chessService.findStatus();
+    }
+
+    private void initializeBoard() {
+        chessService.inititalizeBoard();
+    }
+
+    private void showCurrentTeam() {
+        Team turn = chessService.findCurrentTurn();
+        OUTPUT_VIEW.printCurrentTurn(turn);
+    }
+
+    private void showBoard() {
+        Map<Position, PieceDto> boardDto = chessService.findTotalBoard();
+        OUTPUT_VIEW.printBoard(boardDto);
     }
 
     private void showResult(ProgressStatus status) {
@@ -92,10 +96,5 @@ public class ChessController {
             return;
         }
         OUTPUT_VIEW.printWinnerMessage(status);
-    }
-
-    private void showBoard() {
-        Map<Position, PieceDto> boardDto = chessService.findTotalBoard();
-        OUTPUT_VIEW.printBoard(boardDto);
     }
 }

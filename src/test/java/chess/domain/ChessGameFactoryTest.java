@@ -27,7 +27,7 @@ class ChessGameFactoryTest {
     })
     @DisplayName("폰이 초기 위치에 있다.")
     void pawnTest(Rank rank, File file) {
-        Piece piece = CHESS_GAME.find(new Position(file, rank)).get();
+        Piece piece = CHESS_GAME.findPieceAt(new Position(file, rank)).get();
 
         assertThat(piece).isInstanceOf(Pawn.class);
     }
@@ -38,7 +38,7 @@ class ChessGameFactoryTest {
     })
     @DisplayName("나이트가 초기 위치에 있다.")
     void knightTest(Rank rank, File file) {
-        Piece piece = CHESS_GAME.find(new Position(file, rank)).get();
+        Piece piece = CHESS_GAME.findPieceAt(new Position(file, rank)).get();
 
         assertThat(piece).isInstanceOf(Knight.class);
     }
@@ -49,7 +49,7 @@ class ChessGameFactoryTest {
     })
     @DisplayName("비숍이 초기 위치에 있다.")
     void BishopTest(Rank rank, File file) {
-        Piece piece = CHESS_GAME.find(new Position(file, rank)).get();
+        Piece piece = CHESS_GAME.findPieceAt(new Position(file, rank)).get();
 
         assertThat(piece).isInstanceOf(Bishop.class);
     }
@@ -60,7 +60,7 @@ class ChessGameFactoryTest {
     })
     @DisplayName("륙이 초기 위치에 있다.")
     void rookTest(Rank rank, File file) {
-        Piece piece = CHESS_GAME.find(new Position(file, rank)).get();
+        Piece piece = CHESS_GAME.findPieceAt(new Position(file, rank)).get();
 
         assertThat(piece).isInstanceOf(Rook.class);
     }
@@ -71,7 +71,7 @@ class ChessGameFactoryTest {
     })
     @DisplayName("퀸이 초기 위치에 있다.")
     void queenTest(Rank rank, File file) {
-        Piece piece = CHESS_GAME.find(new Position(file, rank)).get();
+        Piece piece = CHESS_GAME.findPieceAt(new Position(file, rank)).get();
 
         assertThat(piece).isInstanceOf(Queen.class);
     }
@@ -82,7 +82,7 @@ class ChessGameFactoryTest {
     })
     @DisplayName("킹이 초기 위치에 있다.")
     void kingTest(Rank rank, File file) {
-        Piece piece = CHESS_GAME.find(new Position(file, rank)).get();
+        Piece piece = CHESS_GAME.findPieceAt(new Position(file, rank)).get();
 
         assertThat(piece).isInstanceOf(King.class);
     }

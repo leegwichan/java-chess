@@ -66,7 +66,7 @@ public class ChessService {
                 .toList();
     }
 
-    public void moveTo(Position start, Position end) {
+    public void executeMove(Position start, Position end) {
         chessGame.move(start, end);
         ProgressStatus status = chessGame.findStatus();
 
@@ -83,26 +83,7 @@ public class ChessService {
         chessDao.saveMoving(movedPiece, start, turnType);
     }
 
-    public Map<Position, PieceDto> findTotalBoard() {
-        return Position.ALL_POSITIONS.stream()
-                .map(this::toResultEntry)
-                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-    }
-
-    private Entry<Position, PieceDto> toResultEntry(Position position) {
-        PieceDto pieceDto = chessGame.find(position)
-                .map(PieceDto::from)
-                .orElse(PieceDto.createEmptyPiece());
-        return Map.entry(position, pieceDto);
-    }
-
-    private PieceEntity findPieceToEntity(Position position) {
-        return chessGame.find(position)
-                .map(piece -> new PieceEntity(position, piece))
-                .orElse(PieceEntity.createEmptyPiece(position));
-    }
-
-    public Map<Team, Double> calculatePiecePoints() {
+    public Map<Team, Double> executeStatus() {
         Map<Team, Point> status = chessGame.calculateTotalPoints();
         return toDto(status);
     }
@@ -114,6 +95,26 @@ public class ChessService {
                         entry -> entry.getValue().toDouble()
                 ));
     }
+
+    public Map<Position, PieceDto> findTotalBoard() {
+        return Position.ALL_POSITIONS.stream()
+                .map(this::toResultEntry)
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+    }
+
+    private Entry<Position, PieceDto> toResultEntry(Position position) {
+        PieceDto pieceDto = chessGame.findPieceAt(position)
+                .map(PieceDto::from)
+                .orElse(PieceDto.createEmptyPiece());
+        return Map.entry(position, pieceDto);
+    }
+
+    private PieceEntity findPieceToEntity(Position position) {
+        return chessGame.findPieceAt(position)
+                .map(piece -> new PieceEntity(position, piece))
+                .orElse(PieceEntity.createEmptyPiece(position));
+    }
+
 
     public Team findCurrentTurn() {
         return chessGame.findCurrentTurn();

@@ -20,7 +20,7 @@ public class ChessGame {
         this(board, Team.WHITE);
     }
 
-    public Optional<Piece> find(Position position) {
+    public Optional<Piece> findPieceAt(Position position) {
         return board.findPieceAt(position);
     }
 

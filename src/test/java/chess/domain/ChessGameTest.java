@@ -30,7 +30,7 @@ class ChessGameTest {
         Map<Position, Piece> map = Map.of(position, king);
         ChessGame chessGame = new ChessGame(map);
 
-        assertThat(chessGame.find(position)).isEqualTo(Optional.of(king));
+        assertThat(chessGame.findPieceAt(position)).isEqualTo(Optional.of(king));
     }
 
     @Test
@@ -42,7 +42,7 @@ class ChessGameTest {
         Position notExistPosition = new Position(File.D, Rank.TWO);
         ChessGame chessGame = new ChessGame(map);
 
-        assertThat(chessGame.find(notExistPosition)).isEmpty();
+        assertThat(chessGame.findPieceAt(notExistPosition)).isEmpty();
     }
 
     /*
@@ -85,8 +85,8 @@ class ChessGameTest {
             chessGame.move(START_KING, possibleEnd);
 
             assertAll(
-                    () -> assertThat(chessGame.find(possibleEnd)).isEqualTo(Optional.of(KING)),
-                    () -> assertThat(chessGame.find(START_KING)).isEmpty()
+                    () -> assertThat(chessGame.findPieceAt(possibleEnd)).isEqualTo(Optional.of(KING)),
+                    () -> assertThat(chessGame.findPieceAt(START_KING)).isEmpty()
             );
         }
 
@@ -135,8 +135,8 @@ class ChessGameTest {
             chessGame.move(START_QUEEN, START_ENEMY_ROOK);
 
             assertAll(
-                    () -> assertThat(chessGame.find(START_QUEEN)).isEmpty(),
-                    () -> assertThat(chessGame.find(START_ENEMY_ROOK)).isEqualTo(Optional.of(QUEEN))
+                    () -> assertThat(chessGame.findPieceAt(START_QUEEN)).isEmpty(),
+                    () -> assertThat(chessGame.findPieceAt(START_ENEMY_ROOK)).isEqualTo(Optional.of(QUEEN))
             );
         }
 
