@@ -7,6 +7,7 @@ import chess.domain.position.Rank;
 import chess.dto.PieceDto;
 import chess.dto.PieceType;
 import chess.dto.ProgressStatus;
+import chess.dto.StatusDto;
 import java.util.List;
 import java.util.Map;
 
@@ -74,10 +75,9 @@ public class OutputView {
         System.out.print(display.toLowerCase());
     }
 
-    public void printStatus(Map<Team, Double> status) {
+    public void printStatus(StatusDto status) {
         System.out.println();
-        TEAM_ORDER.stream()
-                .forEach(team -> printStatus(team, status.get(team)));
+        TEAM_ORDER.forEach(team -> printStatus(team, status.getScore(team)));
     }
 
     private void printStatus(Team team, double score) {

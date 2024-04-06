@@ -7,12 +7,11 @@ import chess.domain.ChessGame;
 import chess.domain.ChessGameFactory;
 import chess.domain.Point;
 import chess.domain.Team;
-import chess.domain.piece.Piece;
 import chess.domain.position.Position;
 import chess.dto.PieceDto;
 import chess.dto.ProgressStatus;
+import chess.dto.StatusDto;
 import chess.dto.TurnType;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -67,17 +66,9 @@ public class ChessService {
         chessDao.saveMoving(movedPiece, start, turnType);
     }
 
-    public Map<Team, Double> executeStatus() {
+    public StatusDto executeStatus() {
         Map<Team, Point> status = chessGame.calculateTotalPoints();
-        return toDto(status);
-    }
-
-    private Map<Team, Double> toDto(Map<Team, Point> status) {
-        return status.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Entry::getKey,
-                        entry -> entry.getValue().toDouble()
-                ));
+        return StatusDto.from(status);
     }
 
     public Map<Position, PieceDto> findTotalBoard() {

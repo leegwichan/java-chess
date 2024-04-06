@@ -4,6 +4,7 @@ import chess.domain.Team;
 import chess.domain.position.Position;
 import chess.dto.PieceDto;
 import chess.dto.ProgressStatus;
+import chess.dto.StatusDto;
 import chess.view.GameCommand;
 import chess.view.InputView;
 import chess.view.OutputView;
@@ -72,7 +73,7 @@ public class ChessController {
     }
 
     private ProgressStatus executeStatus() {
-        Map<Team, Double> statusDto = chessService.executeStatus();
+        StatusDto statusDto = chessService.executeStatus();
         OUTPUT_VIEW.printStatus(statusDto);
         return chessService.findStatus();
     }
