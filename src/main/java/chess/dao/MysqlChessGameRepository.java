@@ -13,7 +13,6 @@ public class MysqlChessGameRepository implements ChessGameRepository {
             TurnType.BLACK, "BLACK", TurnType.WHITE, "WHITE");
     private static final Map<String, TurnType> STRING_TO_TURN = Map.of(
             "BLACK", TurnType.BLACK, "WHITE", TurnType.WHITE);
-    private static final int EXIST = 1;
 
     private final ConnectionManager connectionManager;
 
@@ -23,16 +22,12 @@ public class MysqlChessGameRepository implements ChessGameRepository {
 
     @Override
     public boolean isExistGame() {
-        return existRow() == EXIST;
-    }
-
-    private int existRow() {
         Connection connection = connectionManager.getConnection();
         String query = "SELECT EXISTS (SELECT 1 FROM chess_game);";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            return resultSet.getInt(1);
+            return resultSet.getBoolean(1);
         } catch (SQLException e) {
             throw new IllegalStateException(e);
         }
