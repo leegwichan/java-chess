@@ -55,12 +55,12 @@ public class ChessService {
     }
 
     private void saveBoard() {
-        List<PieceEntity> entities = findEntities();
+        List<PieceEntity> entities = findPieceEntities();
         TurnType turn = TurnType.from(chessGame.findCurrentTurn());
         chessDao.saveBoard(entities, turn);
     }
 
-    private List<PieceEntity> findEntities() {
+    private List<PieceEntity> findPieceEntities() {
         return Position.ALL_POSITIONS.stream()
                 .map(this::findPieceToEntity)
                 .toList();
