@@ -4,6 +4,7 @@ import chess.domain.Team;
 import chess.domain.position.File;
 import chess.domain.position.Position;
 import chess.domain.position.Rank;
+import chess.dto.BoardDto;
 import chess.dto.PieceDto;
 import chess.dto.PieceType;
 import chess.dto.ProgressStatus;
@@ -21,7 +22,6 @@ public class OutputView {
     private static final Map<PieceType, String> PIECE_DISPLAY = Map.of(
             PieceType.KING, "K", PieceType.QUEEN, "Q", PieceType.KNIGHT, "N", PieceType.BISHOP, "B",
             PieceType.ROOK, "R", PieceType.PAWN, "P", PieceType.EMPTY, ".");
-    private static final String EMPTY_SPACE = ".";
     private static final String ERROR_PREFIX = "[ERROR] ";
 
     public void printStartGame() {
@@ -42,16 +42,16 @@ public class OutputView {
         System.out.println("현재 흰 팀 차례입니다.");
     }
 
-    public void printBoard(Map<Position, PieceDto> board) {
+    public void printBoard(BoardDto board) {
         System.out.println();
         for (Rank rank : RANK_ORDER) {
             printBoardOneLine(board, rank);
         }
     }
 
-    private void printBoardOneLine(Map<Position, PieceDto> board, Rank rank) {
+    private void printBoardOneLine(BoardDto board, Rank rank) {
         for (File file : FILE_ORDER) {
-            PieceDto piece = board.get(new Position(file, rank));
+            PieceDto piece = board.getPieceDto(new Position(file, rank));
             printPiece(piece);
         }
         System.out.println();

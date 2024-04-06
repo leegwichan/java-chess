@@ -2,13 +2,12 @@ package chess;
 
 import chess.domain.Team;
 import chess.domain.position.Position;
-import chess.dto.PieceDto;
+import chess.dto.BoardDto;
 import chess.dto.ProgressStatus;
 import chess.dto.StatusDto;
 import chess.view.GameCommand;
 import chess.view.InputView;
 import chess.view.OutputView;
-import java.util.Map;
 
 public class ChessController {
 
@@ -88,7 +87,7 @@ public class ChessController {
     }
 
     private void showBoard() {
-        Map<Position, PieceDto> boardDto = chessService.findTotalBoard();
+        BoardDto boardDto = chessService.findTotalBoard();
         OUTPUT_VIEW.printBoard(boardDto);
     }
 

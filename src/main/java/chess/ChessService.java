@@ -7,14 +7,13 @@ import chess.domain.ChessGame;
 import chess.domain.ChessGameFactory;
 import chess.domain.Point;
 import chess.domain.Team;
+import chess.domain.piece.Piece;
 import chess.domain.position.Position;
-import chess.dto.PieceDto;
+import chess.dto.BoardDto;
 import chess.dto.ProgressStatus;
 import chess.dto.StatusDto;
 import chess.dto.TurnType;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 public class ChessService {
 
@@ -61,7 +60,9 @@ public class ChessService {
     }
 
     private void saveMoving(Position start, Position end) {
-        PieceEntity movedPiece = findPieceToEntity(end);
+        Piece piece = chessGame.findPieceAt(end)
+                .orElseThrow(() -> new IllegalArgumentException("끝 위치에 말이 없습니다."));
+        PieceEntity movedPiece = new PieceEntity(end, piece);
         TurnType turnType = TurnType.from(chessGame.findCurrentTurn());
         chessDao.saveMoving(movedPiece, start, turnType);
     }
@@ -71,25 +72,9 @@ public class ChessService {
         return StatusDto.from(status);
     }
 
-    public Map<Position, PieceDto> findTotalBoard() {
-        return Position.ALL_POSITIONS.stream()
-                .map(this::toResultEntry)
-                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+    public BoardDto findTotalBoard() {
+        return BoardDto.from(chessGame);
     }
-
-    private Entry<Position, PieceDto> toResultEntry(Position position) {
-        PieceDto pieceDto = chessGame.findPieceAt(position)
-                .map(PieceDto::from)
-                .orElse(PieceDto.createEmptyPiece());
-        return Map.entry(position, pieceDto);
-    }
-
-    private PieceEntity findPieceToEntity(Position position) {
-        return chessGame.findPieceAt(position)
-                .map(piece -> new PieceEntity(position, piece))
-                .orElse(PieceEntity.createEmptyPiece(position));
-    }
-
 
     public Team findCurrentTurn() {
         return chessGame.findCurrentTurn();
