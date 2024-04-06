@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface PieceRepository {
 
-    List<PieceEntity> findAll();
+    PieceEntities findAll();
 
-    List<PieceEntity> saveAll(List<PieceEntity> pieces);
+    PieceEntities saveAll(PieceEntities pieces);
 
     void update(PieceEntity piece);
 

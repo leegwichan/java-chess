@@ -1,6 +1,7 @@
 package chess;
 
 import chess.dao.ChessDao;
+import chess.dao.PieceEntities;
 import chess.dao.PieceEntity;
 import chess.domain.ChessGame;
 import chess.domain.ChessGameFactory;
@@ -28,9 +29,9 @@ public class ChessService {
     public void initializeBoard() {
         validateInitState();
         if (chessDao.isExistSavingGame()) {
-            List<PieceEntity> pieceEntities = chessDao.findAllPieces();
+            PieceEntities pieceEntities = chessDao.findAllPieces();
             TurnType turn = chessDao.findCurrentTurn();
-            chessGame = toBoard(pieceEntities, turn);
+            chessGame = pieceEntities.toBoard(turn);
             return;
         }
         chessGame = ChessGameFactory.createInitBoard();
@@ -43,27 +44,10 @@ public class ChessService {
         }
     }
 
-    private ChessGame toBoard(List<PieceEntity> pieceEntities, TurnType turnType) {
-        Map<Position, Piece> board = pieceEntities.stream()
-                .filter(PieceEntity::isExistPiece)
-                .collect(Collectors.toMap(
-                        PieceEntity::getPosition,
-                        PieceEntity::toPiece
-                ));
-        Team turn = turnType.getTeam();
-        return new ChessGame(board, turn);
-    }
-
     private void saveBoard() {
-        List<PieceEntity> entities = findPieceEntities();
+        PieceEntities entities = PieceEntities.from(chessGame);
         TurnType turn = TurnType.from(chessGame.findCurrentTurn());
         chessDao.saveBoard(entities, turn);
-    }
-
-    private List<PieceEntity> findPieceEntities() {
-        return Position.ALL_POSITIONS.stream()
-                .map(this::findPieceToEntity)
-                .toList();
     }
 
     public void executeMove(Position start, Position end) {

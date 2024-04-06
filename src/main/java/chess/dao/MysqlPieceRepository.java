@@ -45,7 +45,7 @@ public class MysqlPieceRepository implements PieceRepository {
     }
 
     @Override
-    public List<PieceEntity> findAll() {
+    public PieceEntities findAll() {
         Connection connection = connectionManager.getConnection();
         String query = "SELECT board_file, board_rank, type, team FROM pieces";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -56,13 +56,13 @@ public class MysqlPieceRepository implements PieceRepository {
         }
     }
 
-    private List<PieceEntity> toPieceEntities(ResultSet resultSet) throws SQLException {
-        List<PieceEntity> result = new ArrayList<>();
+    private PieceEntities toPieceEntities(ResultSet resultSet) throws SQLException {
+        List<PieceEntity> pieceEntities = new ArrayList<>();
         while (resultSet.next()) {
             PieceEntity pieceEntity = toPieceEntity(resultSet);
-            result.add(pieceEntity);
+            pieceEntities.add(pieceEntity);
         }
-        return result;
+        return new PieceEntities(pieceEntities);
     }
 
     private PieceEntity toPieceEntity(ResultSet resultSet) throws SQLException {
@@ -81,7 +81,7 @@ public class MysqlPieceRepository implements PieceRepository {
     }
 
     @Override
-    public List<PieceEntity> saveAll(List<PieceEntity> pieces) {
+    public PieceEntities saveAll(PieceEntities pieces) {
         Connection connection = connectionManager.getConnection();
         String query = "INSERT INTO pieces(board_file, board_rank, type, team) VALUES (?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -93,8 +93,8 @@ public class MysqlPieceRepository implements PieceRepository {
         }
     }
 
-    private void addBatch(List<PieceEntity> pieces, PreparedStatement preparedStatement) throws SQLException {
-        for (PieceEntity entity : pieces) {
+    private void addBatch(PieceEntities pieces, PreparedStatement preparedStatement) throws SQLException {
+        for (PieceEntity entity : pieces.getPieceEntities()) {
             setPreparedStatementForInsert(entity, preparedStatement);
             preparedStatement.addBatch();
         }

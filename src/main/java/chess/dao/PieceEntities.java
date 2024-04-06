@@ -14,7 +14,7 @@ public class PieceEntities {
     private final List<PieceEntity> pieceEntities;
 
     public PieceEntities(List<PieceEntity> pieceEntities) {
-        this.pieceEntities = pieceEntities;
+        this.pieceEntities = List.copyOf(pieceEntities);
     }
 
     public static PieceEntities from(ChessGame chessGame) {
@@ -43,5 +43,9 @@ public class PieceEntities {
                 ));
         Team turn = turnType.getTeam();
         return new ChessGame(board, turn);
+    }
+
+    public List<PieceEntity> getPieceEntities() {
+        return pieceEntities;
     }
 }

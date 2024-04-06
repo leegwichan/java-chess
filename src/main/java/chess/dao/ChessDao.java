@@ -22,11 +22,11 @@ public class ChessDao {
         return chessGameRepository.find();
     }
 
-    public List<PieceEntity> findAllPieces() {
+    public PieceEntities findAllPieces() {
         return pieceRepository.findAll();
     }
 
-    public void saveBoard(List<PieceEntity> pieces, TurnType currentTurn) {
+    public void saveBoard(PieceEntities pieces, TurnType currentTurn) {
         pieceRepository.saveAll(pieces);
         chessGameRepository.update(currentTurn);
     }
