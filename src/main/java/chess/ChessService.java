@@ -25,7 +25,7 @@ public class ChessService {
         this.chessDao = chessDao;
     }
 
-    public void inititalizeBoard() {
+    public void initializeBoard() {
         validateInitState();
         if (chessDao.isExistSavingGame()) {
             List<PieceEntity> pieceEntities = chessDao.findAllPieces();

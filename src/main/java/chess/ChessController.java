@@ -78,7 +78,7 @@ public class ChessController {
     }
 
     private void initializeBoard() {
-        chessService.inititalizeBoard();
+        chessService.initializeBoard();
     }
 
     private void showCurrentTeam() {
