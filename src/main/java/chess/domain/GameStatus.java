@@ -35,12 +35,9 @@ public class GameStatus {
 
     public ProgressStatus findStatus() {
         if (isProgressGame()) {
-            return ProgressStatus.PROGRESS;
+            return ProgressStatus.progressGame();
         }
-        if (getCurrentTurn().isBlack()) {
-            return ProgressStatus.BLACK_WIN;
-        }
-        return ProgressStatus.WHITE_WIN;
+        return ProgressStatus.winGame(currentTurn);
     }
 
     public Team getCurrentTurn() {

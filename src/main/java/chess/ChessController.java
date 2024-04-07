@@ -60,7 +60,7 @@ public class ChessController {
         if (command.isStatus()) {
             return executeStatus();
         }
-        return ProgressStatus.END_GAME;
+        return ProgressStatus.endGame();
     }
 
     private ProgressStatus executeMove() {
