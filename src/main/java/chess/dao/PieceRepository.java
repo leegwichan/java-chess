@@ -1,7 +1,5 @@
 package chess.dao;
 
-import java.util.List;
-
 public interface PieceRepository {
 
     PieceEntities findAll();

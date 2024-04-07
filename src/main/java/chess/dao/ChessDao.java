@@ -2,7 +2,6 @@ package chess.dao;
 
 import chess.domain.position.Position;
 import chess.dto.TurnType;
-import java.util.List;
 
 public class ChessDao {
 
