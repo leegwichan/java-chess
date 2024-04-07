@@ -14,11 +14,7 @@ public class ChessApplication {
         ChessService chessService = createChessService(connectionManager);
         ChessController chessController = new ChessController(chessService);
 
-        try {
-            chessController.run();
-        } finally {
-            connectionManager.closeConnection();
-        }
+        chessController.run();
     }
 
     private static ChessService createChessService(ConnectionManager connectionManager) {

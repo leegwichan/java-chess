@@ -22,9 +22,9 @@ public class MysqlChessGameRepository implements ChessGameRepository {
 
     @Override
     public boolean isExistGame() {
-        Connection connection = connectionManager.getConnection();
         String query = "SELECT EXISTS (SELECT 1 FROM chess_game);";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = connectionManager.createConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             return resultSet.getBoolean(1);
@@ -35,9 +35,9 @@ public class MysqlChessGameRepository implements ChessGameRepository {
 
     @Override
     public TurnType find() {
-        Connection connection = connectionManager.getConnection();
         String query = "SELECT turn FROM chess_game";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = connectionManager.createConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             String turn = resultSet.getString("turn");
@@ -54,9 +54,9 @@ public class MysqlChessGameRepository implements ChessGameRepository {
     }
 
     private void save(TurnType team) {
-        Connection connection = connectionManager.getConnection();
         String query = "INSERT INTO chess_game (turn) VALUES (?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = connectionManager.createConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, TURN_TO_STING.get(team));
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -66,9 +66,9 @@ public class MysqlChessGameRepository implements ChessGameRepository {
 
     @Override
     public void deleteAll() {
-        Connection connection = connectionManager.getConnection();
         String query = "DELETE FROM chess_game;";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = connectionManager.createConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalStateException(e);

@@ -46,9 +46,9 @@ public class MysqlPieceRepository implements PieceRepository {
 
     @Override
     public PieceEntities findAll() {
-        Connection connection = connectionManager.getConnection();
         String query = "SELECT board_file, board_rank, type, team FROM pieces";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = connectionManager.createConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             return toPieceEntities(resultSet);
         } catch (SQLException e) {
@@ -82,9 +82,9 @@ public class MysqlPieceRepository implements PieceRepository {
 
     @Override
     public PieceEntities saveAll(PieceEntities pieces) {
-        Connection connection = connectionManager.getConnection();
         String query = "INSERT INTO pieces(board_file, board_rank, type, team) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = connectionManager.createConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             addBatch(pieces, preparedStatement);
             preparedStatement.executeBatch();
             return pieces;
@@ -115,9 +115,9 @@ public class MysqlPieceRepository implements PieceRepository {
 
     @Override
     public void update(PieceEntity piece) {
-        Connection connection = connectionManager.getConnection();
         String query = "UPDATE pieces SET type = ?, team = ? WHERE board_file = ? AND board_rank = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = connectionManager.createConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             setPreparedStatementForUpdate(piece, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -140,9 +140,9 @@ public class MysqlPieceRepository implements PieceRepository {
 
     @Override
     public void deleteAll() {
-        Connection connection = connectionManager.getConnection();
         String query = "DELETE FROM pieces";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = connectionManager.createConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalStateException(e);

@@ -13,12 +13,6 @@ public class ConnectionManager {
     private static final String FILE_LOCATION = "src/main/resources/mysql.properties";
     private static final Properties PROPERTIES = loadProperties();
 
-    private final Connection singleConnection;
-
-    public ConnectionManager() {
-        singleConnection = createConnection();
-    }
-
     private static Properties loadProperties() {
         try (FileReader mysqlSettingFile = new FileReader(FILE_LOCATION)) {
             Properties properties = new Properties();
@@ -31,7 +25,7 @@ public class ConnectionManager {
         }
     }
 
-    private Connection createConnection() {
+    public Connection createConnection() {
         try {
             String url = PROPERTIES.getProperty("URL");
             String username = PROPERTIES.getProperty("USERNAME");
@@ -40,17 +34,6 @@ public class ConnectionManager {
         } catch (final SQLException e) {
             System.err.println("DB 연결 오류:" + e.getMessage());
             throw new IllegalStateException("DB와 연결할 수 없습니다.", e);
-        }
-    }
-
-    public Connection getConnection() {
-        return singleConnection;
-    }
-
-    public void closeConnection() {
-        try {
-            singleConnection.close();
-        } catch (SQLException ignore) {
         }
     }
 }
