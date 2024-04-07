@@ -3,6 +3,7 @@ package chess.domain.piece;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import chess.domain.Point;
 import chess.domain.Team;
 import chess.domain.position.File;
 import chess.domain.position.Position;
@@ -10,6 +11,7 @@ import chess.domain.position.Rank;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class KnightTest {
 
@@ -37,5 +39,14 @@ class KnightTest {
         assertThatThrownBy(() -> knight.findPath(start, end, isAttack))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("불가능한 경로입니다.");
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    @DisplayName("나이트의 기물 점수는 2.5점이다.")
+    void getPointTest(boolean isPawnOverlappedInFile) {
+        Knight knight = new Knight(Team.WHITE);
+
+        assertThat(knight.getPoint(isPawnOverlappedInFile)).isEqualTo(new Point(2.5));
     }
 }

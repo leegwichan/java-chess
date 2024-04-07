@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import chess.domain.Point;
 import chess.domain.Team;
 import chess.domain.position.File;
 import chess.domain.position.Position;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class RookTest {
 
@@ -54,5 +56,14 @@ class RookTest {
         assertThatThrownBy(() -> rook.findPath(start, end, isAttack))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("불가능한 경로입니다.");
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    @DisplayName("룩의 기물 점수는 5점이다.")
+    void getPointTest(boolean isPawnOverlappedInFile) {
+        Rook rook = new Rook(Team.WHITE);
+
+        assertThat(rook.getPoint(isPawnOverlappedInFile)).isEqualTo(new Point(5.0));
     }
 }

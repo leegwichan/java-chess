@@ -12,6 +12,7 @@ import chess.domain.piece.Rook;
 import chess.domain.position.File;
 import chess.domain.position.Position;
 import chess.domain.position.Rank;
+import chess.dto.ProgressStatus;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class BoardTest {
+class ChessGameTest {
 
     @Test
     @DisplayName("특정 위치에 어떤 말이 있는지 알려준다.")
@@ -27,68 +28,21 @@ class BoardTest {
         Position position = new Position(File.D, Rank.TWO);
         King king = new King(Team.WHITE);
         Map<Position, Piece> map = Map.of(position, king);
-        Board board = new Board(map);
+        ChessGame chessGame = new ChessGame(map);
 
-        assertThat(board.findPieceAt(position)).isEqualTo(Optional.of(king));
+        assertThat(chessGame.findPieceAt(position)).isEqualTo(Optional.of(king));
     }
 
     @Test
-    @DisplayName("특정 위치에 말이 없는지 알려준다.")
+    @DisplayName("특정 위치에 어떤 말이 있는지 알려준다.")
     void findTest_whenPieceNotExist() {
-        Position position = new Position(File.D, Rank.TWO);
+        Position position = new Position(File.E, Rank.TWO);
         King king = new King(Team.WHITE);
         Map<Position, Piece> map = Map.of(position, king);
-        Board board = new Board(map);
+        Position notExistPosition = new Position(File.D, Rank.TWO);
+        ChessGame chessGame = new ChessGame(map);
 
-        assertThat(board.findPieceAt(position)).isEqualTo(Optional.of(king));
-    }
-
-
-    @Nested
-    @DisplayName("상대편 왕 특정 위치의 존재하는지 테스트")
-    class OpponentKingTest {
-
-        @Test
-        @DisplayName("해당 위치가 비어있을 경우, false를 반환한다.")
-        void isOpponentKingExistAtTest_whenNotExist() {
-            Board board = new Board(Map.of());
-            Position notExistPosition = new Position(File.D, Rank.TWO);
-
-            assertThat(board.isOpponentKingExist(notExistPosition, Team.BLACK)).isFalse();
-        }
-
-        @Test
-        @DisplayName("해당 위치가 같은 팀 말이 있을 경우, false를 반환한다.")
-        void isOpponentKingExistAtTest_whenOurTeamExist() {
-            Position position = new Position(File.E, Rank.TWO);
-            King king = new King(Team.BLACK);
-            Map<Position, Piece> map = Map.of(position, king);
-            Board board = new Board(map);
-
-            assertThat(board.isOpponentKingExist(position, Team.BLACK)).isFalse();
-        }
-
-        @Test
-        @DisplayName("해당 위치가 왕이 아닌 다른 말이 있을 경우, false를 반환한다.")
-        void isOpponentKingExistAtTest_whenOtherPieceExist() {
-            Position position = new Position(File.E, Rank.TWO);
-            Pawn pawn = new Pawn(Team.WHITE);
-            Map<Position, Piece> map = Map.of(position, pawn);
-            Board board = new Board(map);
-
-            assertThat(board.isOpponentKingExist(position, Team.BLACK)).isFalse();
-        }
-
-        @Test
-        @DisplayName("해당 위치가 상대편 왕이 있을 경우, true를 반환한다.")
-        void isOpponentKingExistAtTest_whenOpponentKingExist() {
-            Position position = new Position(File.E, Rank.TWO);
-            King king = new King(Team.WHITE);
-            Map<Position, Piece> map = Map.of(position, king);
-            Board board = new Board(map);
-
-            assertThat(board.isOpponentKingExist(position, Team.BLACK)).isTrue();
-        }
+        assertThat(chessGame.findPieceAt(notExistPosition)).isEmpty();
     }
 
     /*
@@ -98,7 +52,7 @@ class BoardTest {
      * ........ 5
      * ....k... 4
      * ........ 3
-     * ....q..R 2
+     * K...q..R 2
      * ........ 1
      * abcdefgh
      * */
@@ -112,13 +66,15 @@ class BoardTest {
         private static final Queen QUEEN = new Queen(Team.WHITE);
         private static final Rook ENEMY_ROOK = new Rook(Team.BLACK);
         private static final Position START_ENEMY_ROOK = new Position(File.H, Rank.TWO);
+        private static final King ENEMY_KING = new King(Team.BLACK);
+        private static final Position START_ENEMY_KING = new Position(File.A, Rank.TWO);
         private static final Map<Position, Piece> MAP = Map.of(
-                START_KING, KING, START_QUEEN, QUEEN, START_ENEMY_ROOK, ENEMY_ROOK);
-        private Board board;
+                START_KING, KING, START_QUEEN, QUEEN, START_ENEMY_ROOK, ENEMY_ROOK, START_ENEMY_KING, ENEMY_KING);
+        private ChessGame chessGame;
 
         @BeforeEach
         void beforeEach() {
-            board = new Board(MAP);
+            chessGame = new ChessGame(MAP);
         }
 
         @Test
@@ -126,11 +82,11 @@ class BoardTest {
         void moveTest() {
             Position possibleEnd = new Position(File.E, Rank.THREE);
 
-            board.move(START_KING, possibleEnd);
+            chessGame.move(START_KING, possibleEnd);
 
             assertAll(
-                    () -> assertThat(board.findPieceAt(possibleEnd)).isEqualTo(Optional.of(KING)),
-                    () -> assertThat(board.findPieceAt(START_KING)).isEmpty()
+                    () -> assertThat(chessGame.findPieceAt(possibleEnd)).isEqualTo(Optional.of(KING)),
+                    () -> assertThat(chessGame.findPieceAt(START_KING)).isEmpty()
             );
         }
 
@@ -140,7 +96,7 @@ class BoardTest {
             Position emptyPosition = new Position(File.F, Rank.EIGHT);
             Position end = new Position(File.F, Rank.TWO);
 
-            assertThatThrownBy(() -> board.move(emptyPosition, end))
+            assertThatThrownBy(() -> chessGame.move(emptyPosition, end))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("해당 위치에 말이 없습니다.");
         }
@@ -150,7 +106,7 @@ class BoardTest {
         void moveTest_whenOutOfMovement_throwException() {
             Position outOfMovement = new Position(File.F, Rank.EIGHT);
 
-            assertThatThrownBy(() -> board.move(START_KING, outOfMovement))
+            assertThatThrownBy(() -> chessGame.move(START_KING, outOfMovement))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("불가능한 경로입니다.");
         }
@@ -160,7 +116,7 @@ class BoardTest {
         void moveTest_whenBlocked_throwException() {
             Position blockedPosition = new Position(File.E, Rank.FIVE);
 
-            assertThatThrownBy(() -> board.move(START_QUEEN, blockedPosition))
+            assertThatThrownBy(() -> chessGame.move(START_QUEEN, blockedPosition))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("다른 말이 있어 이동 불가능합니다.");
         }
@@ -168,7 +124,7 @@ class BoardTest {
         @Test
         @DisplayName("도착할 곳에 같은 팀이 있을 경우, 예외가 발생한다.")
         void moveTest_whenExistSameTeamAtTheEnd_throwException() {
-            assertThatThrownBy(() -> board.move(START_QUEEN, START_KING))
+            assertThatThrownBy(() -> chessGame.move(START_QUEEN, START_KING))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("도착 지점에 같은 팀 말이 있어 이동이 불가능합니다.");
         }
@@ -176,12 +132,40 @@ class BoardTest {
         @Test
         @DisplayName("도착할 곳에 다른 팀이 있을 경우, 해당 말을 잡아먹는다.")
         void moveTest_whenExistSameTeamAtTheEnd() {
-            board.move(START_QUEEN, START_ENEMY_ROOK);
+            chessGame.move(START_QUEEN, START_ENEMY_ROOK);
 
             assertAll(
-                    () -> assertThat(board.findPieceAt(START_QUEEN)).isEmpty(),
-                    () -> assertThat(board.findPieceAt(START_ENEMY_ROOK)).isEqualTo(Optional.of(QUEEN))
+                    () -> assertThat(chessGame.findPieceAt(START_QUEEN)).isEmpty(),
+                    () -> assertThat(chessGame.findPieceAt(START_ENEMY_ROOK)).isEqualTo(Optional.of(QUEEN))
             );
+        }
+
+        @Test
+        @DisplayName("도착할 곳에 다른 팀이 있을 경우, 해당 말을 잡아먹는다.")
+        void moveTest_whenNotInTurn_throwException() {
+            Position legalPosition = new Position(File.D, Rank.EIGHT);
+
+            assertThatThrownBy(() -> chessGame.move(START_ENEMY_ROOK, legalPosition))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("해당 팀의 차례가 아닙니다.");
+        }
+
+        @Test
+        @DisplayName("상대편 왕을 잡을 경우, 해당 팀이 이긴다.")
+        void moveTest_whenCaptureKing_winGame() {
+            chessGame.move(START_QUEEN, START_ENEMY_KING);
+
+            assertThat(chessGame.findStatus()).isEqualTo(ProgressStatus.WHITE_WIN);
+        }
+
+        @Test
+        @DisplayName("상대편 왕을 잡지 않은 경우, 게임이 진행된다.")
+        void moveTest_whenNotCaptureKing_progressGame() {
+            Position possiblePosition = new Position(File.E, Rank.THREE);
+
+            chessGame.move(START_QUEEN, possiblePosition);
+
+            assertThat(chessGame.findStatus()).isEqualTo(ProgressStatus.PROGRESS);
         }
     }
 
@@ -203,11 +187,11 @@ class BoardTest {
         @Test
         @DisplayName("팀 별로 각 기물의 점수를 더하여 계산한다.")
         void calculatePointTest_whenNotExistPawn_addAll() {
-            Board board = new Board(Map.of(
+            ChessGame chessGame = new ChessGame(Map.of(
                     new Position(File.A, Rank.ONE), new Rook(Team.WHITE),
                     new Position(File.D, Rank.ONE), new Queen(Team.WHITE)));
 
-            assertThat(board.calculateTotalPoints()).containsOnly(
+            assertThat(chessGame.calculateTotalPoints()).containsOnly(
                     Map.entry(Team.WHITE, new Point(5.0 + 9.0)),
                     Map.entry(Team.BLACK, Point.ZERO));
         }
@@ -226,12 +210,12 @@ class BoardTest {
         @Test
         @DisplayName("각 폰은 한 파일에 같이 없을 경우, 높은 점수로 계산한다.")
         void calculatePointTest_whenExistPawnSameTeamAndDifferentFile_addHighPoint() {
-            Board board = new Board(Map.of(
+            ChessGame chessGame = new ChessGame(Map.of(
                     new Position(File.E, Rank.TWO), new Pawn(Team.WHITE),
                     new Position(File.F, Rank.TWO), new Pawn(Team.WHITE),
                     new Position(File.E, Rank.SEVEN), new Pawn(Team.BLACK)));
 
-            assertThat(board.calculateTotalPoints()).containsOnly(
+            assertThat(chessGame.calculateTotalPoints()).containsOnly(
                     Map.entry(Team.WHITE, new Point(1.0 + 1.0)),
                     Map.entry(Team.BLACK, new Point(1.0)));
         }
@@ -250,11 +234,11 @@ class BoardTest {
         @Test
         @DisplayName("각 폰은 한 줄에 같이 있을 경우, 낮은 점수로 계산한다.")
         void calculatePointTest_whenExistPawnSameTeamAndFile_addLowPoint() {
-            Board board = new Board(Map.of(
+            ChessGame chessGame = new ChessGame(Map.of(
                     new Position(File.E, Rank.TWO), new Pawn(Team.WHITE),
                     new Position(File.E, Rank.THREE), new Pawn(Team.WHITE)));
 
-            assertThat(board.calculateTotalPoints()).containsOnly(
+            assertThat(chessGame.calculateTotalPoints()).containsOnly(
                     Map.entry(Team.WHITE, new Point(0.5 + 0.5)),
                     Map.entry(Team.BLACK, Point.ZERO));
         }

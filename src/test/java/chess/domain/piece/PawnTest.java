@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import chess.domain.Point;
 import chess.domain.Team;
 import chess.domain.position.File;
 import chess.domain.position.Position;
@@ -115,5 +116,23 @@ class PawnTest {
         assertThatThrownBy(() -> pawn.findPath(start, end, isAttack))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("불가능한 경로입니다.");
+    }
+
+    @Test
+    @DisplayName("폰의 기물 점수는 1점이다.")
+    void getPointTest() {
+        Pawn pawn = new Pawn(Team.WHITE);
+        boolean isPawnOverlappedInFile = false;
+
+        assertThat(pawn.getPoint(isPawnOverlappedInFile)).isEqualTo(new Point(1.0));
+    }
+
+    @Test
+    @DisplayName("같은 줄에 폰이 있을 경우, 폰의 기물 점수는 0.5점이다.")
+    void getPointTest_whenPawnisPawnOverlappedInFileInSameFile() {
+        Pawn pawn = new Pawn(Team.WHITE);
+        boolean isPawnOverlappedInFile = true;
+
+        assertThat(pawn.getPoint(isPawnOverlappedInFile)).isEqualTo(new Point(0.5));
     }
 }

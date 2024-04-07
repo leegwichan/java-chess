@@ -1,5 +1,6 @@
 package chess.domain.piece;
 
+import chess.domain.Point;
 import chess.domain.Team;
 import chess.domain.movement.MovementRule;
 import chess.domain.movement.continuous.EastMovement;
@@ -14,11 +15,18 @@ import java.util.List;
 
 public final class Queen extends Piece {
 
+    private static final Point PIECE_POINT = new Point(9.0);
+
     private static final List<MovementRule> MOVEMENT_RULES = List.of(
             new EastMovement(), new WestMovement(), new SouthMovement(), new NorthMovement(),
             new NorthEastMovement(), new SouthEastMovement(), new NorthWestMovement(), new SouthWestMovement());
 
     public Queen(Team team) {
         super(team, MOVEMENT_RULES);
+    }
+
+    @Override
+    public Point getPoint(boolean isPawnOverlappedInFile) {
+        return PIECE_POINT;
     }
 }

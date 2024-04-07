@@ -1,11 +1,12 @@
 package chess.domain.piece;
 
+import chess.domain.Point;
 import chess.domain.Team;
 import chess.domain.movement.MovementRule;
 import chess.domain.position.Position;
 import java.util.List;
 
-public abstract class Piece {
+public abstract sealed class Piece permits King, Queen, Rook, Bishop, Knight, Pawn {
 
     private final Team team;
     private final List<MovementRule> movementRules;
@@ -13,10 +14,6 @@ public abstract class Piece {
     protected Piece(Team team, List<MovementRule> movementRules) {
         this.team = team;
         this.movementRules = movementRules;
-    }
-
-    public final boolean isBlackTeam() {
-        return team.isBlack();
     }
 
     public final List<Position> findPath(Position start, Position end, boolean isAttack) {
@@ -34,4 +31,18 @@ public abstract class Piece {
     public final boolean isSameTeam(Team team) {
         return this.team == team;
     }
+
+    public final boolean isKing() {
+        return this.getClass() == King.class;
+    }
+
+    public final boolean isPawn() {
+        return this.getClass() == Pawn.class;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public abstract Point getPoint(boolean isPawnOverlappedInFile);
 }

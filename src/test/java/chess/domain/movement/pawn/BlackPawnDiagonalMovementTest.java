@@ -1,4 +1,4 @@
-package chess.domain.movement;
+package chess.domain.movement.pawn;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -2,14 +2,16 @@ package chess.domain;
 
 public enum Team {
 
-    BLACK, WHITE;
+    BLACK,
+    WHITE,
+    ;
 
     public boolean isBlack() {
         return this == BLACK;
     }
 
     public Team nextTurn() {
-        if (this == BLACK) {
+        if (this.isBlack()) {
             return WHITE;
         }
         return BLACK;
